@@ -1,0 +1,8 @@
+*
+
+!Sources/
+!Config/
+!Tests/
+!Package.swift
+!Package.resolved
+!scripts/

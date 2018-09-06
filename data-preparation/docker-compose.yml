@@ -1,0 +1,15 @@
+version: '3.4'
+services:
+  db:
+    image: mdillon/postgis
+    environment:
+      POSTGRES_USER: "user"
+      POSTGRES_DBNAME: "data"
+      POSTGRES_PASSWORD: "service"
+      PGDATA: "/var/lib/postgresql/data/db-files/"
+    ports:
+      - 5432:5432
+    volumes:
+      - type: bind
+        source: ./tmp
+        target: /var/lib/postgresql/data

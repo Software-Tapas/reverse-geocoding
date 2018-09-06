@@ -1,0 +1,34 @@
+version: '3.4'
+services:
+  vapor:
+    build: .
+    command: --env=production --hostname=0.0.0.0
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    external_links:
+      - db:db
+    environment:
+      DB_PASSWORD_FILE: "/database-service-password"
+      DB_HOST: "db"
+      DB_PORT: 5432
+      DB_USERNAME: "vapor"
+      DB_DATABASE: "vapor"
+    volumes:
+      - ./tmp/database-service-password:/database-service-password
+
+  db:
+    image: mdillon/postgis
+    environment:
+      POSTGRES_USER: "vapor"
+      POSTGRES_DBNAME: "vapor"
+      POSTGRES_PASSWORD_FILE: "/database-service-password"
+      PGDATA: "/var/lib/postgresql/data/db-files/"
+    ports:
+      - 5432:5432
+    volumes:
+      - type: bind
+        source: ./tmp/data
+        target: /var/lib/postgresql/data
+      - ./tmp/database-service-password:/database-service-password

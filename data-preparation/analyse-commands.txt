@@ -1,0 +1,13 @@
+EXPLAIN (ANALYZE)
+SELECT name, "name:en" as name_en, "name:de" as name_de, admin_level, way_area from place_polygon
+WHERE ST_CONTAINS(way, ST_SetSRID(ST_Point(-122.2515363, 37.8695371), 4326))
+ORDER BY admin_level DESC;
+
+
+CREATE INDEX index_place_polygon_way ON place_polygon USING gist(way);
+
+CLUSTER place_polygon USING index_place_polygon_way;
+VACUUM (Full) place_polygon;
+
+docker exec d804d0a6dce8 pg_dump -U vapor --table place_polygon > backup.txt
+
