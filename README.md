@@ -28,12 +28,12 @@ This is an example response for the *GET* query on `http://localhost:8080/locati
 ## Data
 The following data structure is needed in the table `place_polygon`:
 
-- name: String
-- name:de: String
-- name:en: String
-- way: Geometry - Polygon
-- admin_level: Int
-- way_area: Double
+- `name`: String
+- `name:de`: String
+- `name:en`: String
+- `way`: Geometry - Polygon
+- `admin_level`: Int
+- `way_area`: Double
 
 [Here](./data-preparation/Instructions.md) are instructions to create this table from the Open Street Map data. So the data is not part of this project.
 
