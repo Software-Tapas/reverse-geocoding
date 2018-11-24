@@ -1,5 +1,5 @@
 # Reverse Geocoding Service 
-[![Language](https://img.shields.io/badge/Swift-4.1-brightgreen.svg)](http://swift.org)
+[![Language](https://img.shields.io/badge/Swift-4.2-brightgreen.svg)](http://swift.org)
 [![Vapor Version](https://img.shields.io/badge/Vapor-3-F6CBCA.svg)](http://vapor.codes)
 
 ## Introduction

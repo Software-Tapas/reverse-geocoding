@@ -1,5 +1,5 @@
 # Build image
-FROM swift:4.1 as builder
+FROM swift:4.2 as builder
 
 RUN apt-get -qq update && apt-get -q -y install postgresql postgresql-client postgresql-contrib libpq-dev
 
