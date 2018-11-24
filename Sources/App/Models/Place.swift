@@ -6,9 +6,9 @@ struct Place: Codable {
     let name_en: String?
     var adminLevel: Int {
         guard let admin_level = admin_level else { return 0 }
-        return Int(admin_level) ?? 0
+        return admin_level
     }
-    private let admin_level: String?
+    private let admin_level: Int?
     let way_area: Double?
 
     func name(forLanguage language: Language) -> String? {
@@ -24,7 +24,7 @@ struct Place: Codable {
         return name(forLanguage: language) ?? String()
     }
 
-    init(name: String?, name_de: String?, name_en: String?, admin_level: String?, way_area: Double?) {
+    init(name: String?, name_de: String?, name_en: String?, admin_level: Int?, way_area: Double?) {
         self.name = name
         self.name_de = name_de
         self.name_en = name_en
