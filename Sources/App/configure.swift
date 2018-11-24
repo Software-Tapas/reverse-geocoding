@@ -28,8 +28,7 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
         databases.enableLogging(on: .psql)
         databases.add(database: postgresql, as: .psql)
         services.register(databases)
-
-        services.register(PostgreSQLDatabaseService.self)
+        services.register(DatabaseFetchable.self, factory: PostgreSQLDatabaseService.makeService)
     }
 }
 
