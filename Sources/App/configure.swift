@@ -1,4 +1,5 @@
 import PostgreSQL
+import Redis
 import Vapor
 import Service
 
@@ -6,6 +7,7 @@ import Service
 public func configure(_ config: inout Config, _ env: inout Environment, _ services: inout Services) throws {
     /// Register providers first
     try services.register(PostgreSQLProvider())
+    try services.register(RedisProvider())
 
     /// Register routes to the router
     let router = EngineRouter.default()
@@ -23,17 +25,34 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
         let postgreSQLConfig = try PostgreSQLDatabaseConfig(env: Environment.self)
         let postgresql = PostgreSQLDatabase(config: postgreSQLConfig)
 
+        // Configuration of Redis
+        let redisConfig = try RedisClientConfig(env: Environment.self)
+        let redis = try RedisDatabase(config: redisConfig)
+
         /// Register the configured PostgreSQL database to the database config.
         var databases = DatabasesConfig()
         databases.enableLogging(on: .psql)
         databases.add(database: postgresql, as: .psql)
+        databases.add(database: redis, as: .redis)
         services.register(databases)
         services.register(DatabaseFetchable.self, factory: PostgreSQLDatabaseService.makeService)
+        services.register(DatabaseCachable.self, factory: RedisCacheLayerService.makeService)
     }
 }
 
 enum AppError: Error {
     case parameterMissing
+}
+
+extension RedisClientConfig {
+    init(env: Environment.Type) throws {
+        guard let urlString = env.get("REDIS_URL"),
+            let url = URL(string: urlString)
+            else {
+                throw AppError.parameterMissing
+        }
+        self.init(url: url)
+    }
 }
 
 extension PostgreSQLDatabaseConfig {

@@ -53,6 +53,7 @@ The web server also exposes a health endpoint to check if the service is running
 - `DB_DATABASE`
 - `DB_PASSWORD_FILE`
 - `DB_PASSWORD` (only used if `DB_PASSWORD_FILE` is not set)
+- `REDIS_URL` for the redis server url
 
 ## License
 This project is available under the AGPL Version 3 license. See the LICENSE file for more info.

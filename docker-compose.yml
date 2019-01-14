@@ -7,14 +7,17 @@ services:
       - 8080:8080
     depends_on:
       - db
+      - redis
     external_links:
       - db:db
+      - redis:redis
     environment:
       DB_PASSWORD_FILE: "/database-service-password"
       DB_HOST: "db"
       DB_PORT: 5432
       DB_USERNAME: "vapor"
       DB_DATABASE: "vapor"
+      REDIS_URL: "redis://redis"
     volumes:
       - ./tmp/database-service-password:/database-service-password
 
@@ -32,3 +35,7 @@ services:
         source: ./tmp/data
         target: /var/lib/postgresql/data
       - ./tmp/database-service-password:/database-service-password
+  redis:
+    image: redis:alpine
+    ports:
+      - 6379:6379
