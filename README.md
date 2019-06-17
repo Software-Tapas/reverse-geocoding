@@ -1,6 +1,7 @@
 # Reverse Geocoding Service 
 [![Language](https://img.shields.io/badge/Swift-4.2-brightgreen.svg)](http://swift.org)
 [![Vapor Version](https://img.shields.io/badge/Vapor-3-F6CBCA.svg)](http://vapor.codes)
+[![CircleCI](https://circleci.com/gh/Software-Tapas/reverse-geocoding.svg?style=shield)](https://circleci.com/gh/Software-Tapas/reverse-geocoding)
 
 ## Introduction
 For location-based services, it is often useful to display a name for any location. This can be achieved by reverse geocoding. By making use of Open Street Map data this project makes it possible to retrieve a location name for any coordinate worldwide in different languages (currently English and German).
