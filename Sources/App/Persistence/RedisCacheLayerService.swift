@@ -23,6 +23,13 @@ final class RedisCacheLayerService: DatabaseCachable {
             return conn.set(coordinate.key, to: response)
         })
     }
+
+    func purgeAllData() throws -> EventLoopFuture<Void> {
+        return container.withNewConnection(to: .redis, closure: { (database) -> EventLoopFuture<Void> in
+            return database.command("FLUSHDB")
+                .transform(to: Void())
+        })
+    }
 }
 
 enum ConvertError: Error {
@@ -49,5 +56,32 @@ extension PlaceResponse: RedisDataConvertible {
 extension Coordinate {
     var key: String {
         return "\(self.latitude);\(self.latitude)"
+    }
+}
+
+struct PurgeRedisCache: Command {
+    var arguments: [CommandArgument] {
+        return []
+    }
+
+    var options: [CommandOption] {
+        return []
+    }
+
+    var help: [String] {
+        return ["Purges all cached data in Redis"]
+    }
+
+    func run(using context: CommandContext) throws -> EventLoopFuture<Void> {
+        let logger = try context.container.make(Logger.self)
+        guard let redisService = try? context.container.make(RedisCacheLayerService.self) else {
+            logger.error("No Redis caching layer is registered")
+            return context.container.future()
+        }
+        logger.warning("Start purging all Redis cached data")
+
+        return try redisService.purgeAllData().do({ () in
+            logger.info("Purging Succeeded")
+        })
     }
 }
