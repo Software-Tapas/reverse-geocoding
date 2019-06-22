@@ -28,6 +28,7 @@ jobs:
       - image: vapor/swift:5.1-bionic
     steps:
       - checkout
+      - run: apt-get -qq update && apt-get -q -y install postgresql postgresql-client postgresql-contrib libpq-dev
       - run:
           name: Compile code
           command: swift build
@@ -40,6 +41,7 @@ jobs:
       - image: vapor/swift:5.1-bionic
     steps:
       - checkout
+      - run: apt-get -qq update && apt-get -q -y install postgresql postgresql-client postgresql-contrib libpq-dev
       - run:
           name: Compile code with optimizations
           command: swift build -c release
