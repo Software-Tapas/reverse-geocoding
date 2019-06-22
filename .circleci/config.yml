@@ -13,9 +13,19 @@ jobs:
           name: Run unit tests
           command: swift test
 
-  bionic-swift-5:
+  linux-release:
     docker:
-      - image: swift:5.0
+      - image: swift:4.2
+    steps:
+      - checkout
+      - run:
+          name: Compile code with optimizations
+          command: swift build -c release
+
+
+  bionic-swift-5-1:
+    docker:
+      - image: vapor/swift:5.1-bionic
     steps:
       - checkout
       - run:
@@ -25,9 +35,9 @@ jobs:
           name: Run unit tests
           command: swift test
 
-  linux-release:
+  bionic-swift-5-1-release:
     docker:
-      - image: swift:4.2
+      - image: vapor/swift:5.1-bionic
     steps:
       - checkout
       - run:
@@ -40,4 +50,5 @@ workflows:
     jobs:
       - linux
       - linux-release
-      - bionic-swift-5
+      - bionic-swift-5-1
+      - bionic-swift-5-1-release
