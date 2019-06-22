@@ -23,9 +23,9 @@ jobs:
           command: swift build -c release
 
 
-  bionic-swift-5-1:
+  linux-swift-5:
     docker:
-      - image: vapor/swift:5.1-bionic
+      - image: swift:5.0
     steps:
       - checkout
       - run: apt-get -qq update && apt-get -q -y install libpq-dev libssl-dev zlib1g-dev postgresql postgresql-client postgresql-contrib
@@ -36,9 +36,9 @@ jobs:
           name: Run unit tests
           command: swift test
 
-  bionic-swift-5-1-release:
+  linux-swift-5-release:
     docker:
-      - image: vapor/swift:5.1-bionic
+      - image: swift:5.0
     steps:
       - checkout
       - run: apt-get -qq update && apt-get -q -y install libpq-dev libssl-dev zlib1g-dev postgresql postgresql-client postgresql-contrib
@@ -52,5 +52,5 @@ workflows:
     jobs:
       - linux
       - linux-release
-      - bionic-swift-5-1
-      - bionic-swift-5-1-release
+      - linux-swift-5
+      - linux-swift-5-release
