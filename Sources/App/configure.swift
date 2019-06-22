@@ -44,6 +44,10 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
         services.register(DatabaseFetchable.self, factory: PostgreSQLDatabaseService.makeService)
         services.register(DatabaseCachable.self, factory: RedisCacheLayerService.makeService)
     }
+
+    var commandConfig = CommandConfig.default()
+    commandConfig.use(PurgeRedisCache(), as: "purge-cache")
+    services.register(commandConfig)
 }
 
 enum AppError: Error {
