@@ -6,10 +6,22 @@ jobs:
       - image: swift:4.2
     steps:
       - checkout
-      - run: 
+      - run:
           name: Compile code
           command: swift build
-      - run: 
+      - run:
+          name: Run unit tests
+          command: swift test
+
+  bionic-swift-5:
+    docker:
+      - image: swift:5.0
+    steps:
+      - checkout
+      - run:
+          name: Compile code
+          command: swift build
+      - run:
           name: Run unit tests
           command: swift test
 
@@ -18,7 +30,7 @@ jobs:
       - image: swift:4.2
     steps:
       - checkout
-      - run: 
+      - run:
           name: Compile code with optimizations
           command: swift build -c release
 
@@ -28,3 +40,4 @@ workflows:
     jobs:
       - linux
       - linux-release
+      - bionic-swift-5
