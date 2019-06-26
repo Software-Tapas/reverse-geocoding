@@ -4,3 +4,4 @@ struct Coordinate: Codable {
 }
 
 extension Coordinate: Equatable { }
+extension Coordinate: Hashable { }
