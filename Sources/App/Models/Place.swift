@@ -52,6 +52,7 @@ extension Place {
         }
         return self != primaryPlace &&
             self.name?.contains(placeName) == false &&
-            placeName.contains(self.name ?? String()) == false
+            placeName.contains(self.name ?? String()) == false &&
+            adminLevel != 5
     }
 }
