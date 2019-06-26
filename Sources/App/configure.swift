@@ -45,6 +45,7 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
         services.register(databases)
         services.register(DatabaseFetchable.self, factory: PostgreSQLDatabaseService.makeService)
         services.register(DatabaseCachable.self, factory: RedisCacheLayerService.makeService)
+        config.prefer(RedisCacheLayerService.self, for: DatabaseCachable.self)
     }
 
     var commandConfig = CommandConfig.default()
