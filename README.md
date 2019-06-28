@@ -7,6 +7,7 @@
 For location-based services, it is often useful to display a name for any location. This can be achieved by reverse geocoding. By making use of Open Street Map data this project makes it possible to retrieve a location name for any coordinate worldwide in different languages (currently English and German).
 
 ## Usage
+### Single coordinate location name
 `GET /location/<latitude>/<longitude>`
 This is an example response for the *GET* query on `http://localhost:8080/location/52.51/13.40`:
 
@@ -21,8 +22,27 @@ This is an example response for the *GET* query on `http://localhost:8080/locati
 }
 ```
 
+### Multi coordiante location name
+`POST /location/<latitude>/<longitude>` (POST method due to body content). The body looks like the following:
+
+```
+{
+    "coordinates": [
+        {
+            "latitude": 51.796873,
+            "longitude": 8.434899
+        },
+        {
+            "latitude": 51.804507,
+            "longitude": 8.432158
+        }
+    ]
+}
+```
+This request will return a nullified coordiante object in the response due to multiple input coordinates.
+
 ## Requirements
-- Swift 4.1 is used with Vapor 3.
+- Swift 4.2 is used with Vapor 3.
 - Postgres with PostGIS is used for data storage and queries.
 - A docker-compose file is placed in the root directory. See the docker section for further steps with docker.
 

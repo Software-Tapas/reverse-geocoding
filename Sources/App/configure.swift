@@ -26,6 +26,8 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     middlewares.use(ErrorMiddleware.self)
     services.register(middlewares)
 
+    services.register(DatabaseCachable.self, factory: InMemoryCachingLayerService.makeService)
+
     if env != .testing {
         // Configuration of PostgreSQL
         let postgreSQLConfig = try PostgreSQLDatabaseConfig(env: Environment.self)
@@ -43,6 +45,7 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
         services.register(databases)
         services.register(DatabaseFetchable.self, factory: PostgreSQLDatabaseService.makeService)
         services.register(DatabaseCachable.self, factory: RedisCacheLayerService.makeService)
+        config.prefer(RedisCacheLayerService.self, for: DatabaseCachable.self)
     }
 
     var commandConfig = CommandConfig.default()

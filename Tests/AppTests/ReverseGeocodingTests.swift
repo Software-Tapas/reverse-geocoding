@@ -57,13 +57,16 @@ class ReverseGeocodingTests: XCTestCase {
         XCTAssertEqual(result.coordinate, coordinate)
     }
 
-    func testResultWithTwoHighPlaces() throws {
-        let places = [Place(name: "1.", name_de: "Erster", name_en: "first", admin_level: 5, way_area: nil),
-                      Place(name: "2.", name_de: "Zweiter", name_en: "second", admin_level: 4, way_area: nil)]
+    func testResultWithHighPlacesOnCountryLevel() throws {
+        let places = [
+            Place(name: "1.", name_de: "Erster", name_en: "first", admin_level: 5, way_area: nil),
+            Place(name: "2.", name_de: "Zweiter", name_en: "second", admin_level: 4, way_area: nil),
+            Place(name: "3.", name_de: "Dritter", name_en: "third", admin_level: 2, way_area: nil),
+        ]
         let coordinate = Coordinate(longitude: 0, latitude: 0)
         let result = try PlaceResponse.result(for: places, coordinate: coordinate)
-        XCTAssertEqual(result.de, "Erster")
-        XCTAssertEqual(result.en, "first")
+        XCTAssertEqual(result.de, "Erster, Dritter")
+        XCTAssertEqual(result.en, "first, third")
         XCTAssertEqual(result.coordinate, coordinate)
     }
 
@@ -96,7 +99,7 @@ extension ReverseGeocodingTests {
         ("testResultWithOnePlace", testResultWithOnePlace),
         ("testResultWithTwoLowPlaces", testResultWithTwoLowPlaces),
         ("testResultWithThreePlaces", testResultWithThreePlaces),
-        ("testResultWithTwoHighPlaces", testResultWithTwoHighPlaces),
+        ("testResultWithHighPlacesOnCountryLevel", testResultWithHighPlacesOnCountryLevel),
         ("testResultWithTwoEqualNames", testResultWithTwoEqualNames),
         ("testResultWithTwoEqualNamesAndAnother", testResultWithTwoEqualNamesAndAnother),
     ]

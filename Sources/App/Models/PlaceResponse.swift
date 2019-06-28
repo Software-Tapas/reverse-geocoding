@@ -18,9 +18,14 @@ extension PlaceResponse {
         guard let firstPlace = places.first, places.count > 0 else {
             throw PlaceResponseError.emptyPlaceList
         }
-        // Check if firstplace admin level is biger than 6 else return only the first place as result
+        // Check if firstplace admin level is biger than 6 else return the first place with the coutry as result
         guard let secondaryPlace = try secondRelevantPlace(for: firstPlace, in: places), firstPlace.adminLevel >= 6 else {
-            return result(forPrimaryPlace: firstPlace, coordinate: coordinate)
+            if let countryPlace = places.last, countryPlace != firstPlace {
+                let placeTuple = PlaceTuple(primaryPlace: firstPlace, secondaryPlace: places.last!)
+                return PlaceResponse(places: placeTuple, coordinate: coordinate)
+            } else {
+                return result(forPrimaryPlace: firstPlace, coordinate: coordinate)
+            }
         }
         let placeTuple = PlaceTuple(primaryPlace: firstPlace, secondaryPlace: secondaryPlace)
         return PlaceResponse(places: placeTuple, coordinate: coordinate)
