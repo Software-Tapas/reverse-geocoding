@@ -3,6 +3,11 @@ struct PlaceTuple {
     let secondaryPlace: Place
 
     func name(forLanguage language: Language) -> String {
-        return "\(primaryPlace.nameOrEmptyString(forLanguage: language)), \(secondaryPlace.nameOrEmptyString(forLanguage: language))"
+        return [
+            primaryPlace.nameOrNil(forLanguage: language),
+            secondaryPlace.nameOrNil(forLanguage: language)
+        ]
+        .compactMap({ $0 })
+        .joined(separator: ", ")
     }
 }

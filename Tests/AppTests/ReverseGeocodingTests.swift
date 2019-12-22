@@ -90,6 +90,13 @@ class ReverseGeocodingTests: XCTestCase {
         XCTAssertEqual(result.en, "name_en, Berlin")
         XCTAssertEqual(result.coordinate, coordinate)
     }
+
+    func testPlaceTupleHandlingWithOnlyOnePlace() throws {
+        let emptyPlace = Place(name: nil, name_de: nil, name_en: nil, admin_level: nil, way_area: nil)
+        let fullPlace = Place(name: "Berlin", name_de: "Berlin", name_en: "Berlin", admin_level: 4, way_area: nil)
+        let tuple = PlaceTuple(primaryPlace: fullPlace, secondaryPlace: emptyPlace)
+        XCTAssertEqual(tuple.name(forLanguage: .en), "Berlin")
+    }
 }
 
 extension ReverseGeocodingTests {
@@ -102,5 +109,6 @@ extension ReverseGeocodingTests {
         ("testResultWithHighPlacesOnCountryLevel", testResultWithHighPlacesOnCountryLevel),
         ("testResultWithTwoEqualNames", testResultWithTwoEqualNames),
         ("testResultWithTwoEqualNamesAndAnother", testResultWithTwoEqualNamesAndAnother),
+        ("testPlaceTupleHandlingWithOnlyOnePlace", testPlaceTupleHandlingWithOnlyOnePlace),
     ]
 }

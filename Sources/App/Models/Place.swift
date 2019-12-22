@@ -20,8 +20,8 @@ struct Place: Codable {
         }
     }
 
-    func nameOrEmptyString(forLanguage language: Language) -> String {
-        return name(forLanguage: language) ?? String()
+    func nameOrNil(forLanguage language: Language) -> String? {
+        return name(forLanguage: language)
     }
 
     init(name: String?, name_de: String?, name_en: String?, admin_level: Int?, way_area: Double?) {
