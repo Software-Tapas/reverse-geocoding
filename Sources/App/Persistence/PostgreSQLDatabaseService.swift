@@ -14,13 +14,12 @@ final class PostgreSQLDatabaseService: DatabaseFetchable {
 
     func fetchPlaces(forCoordinate coordinate: Coordinate) -> EventLoopFuture<[Place]> {
         return container.withPooledConnection(to: .psql, closure: { (conn: PostgreSQLDatabase.Connection) -> EventLoopFuture<[Place]> in
-            let placesFuture = conn.raw("""
+            return conn.raw("""
                 SELECT name, "name:en" as name_en, "name:de" as name_de, admin_level, way_area from place_polygon
                 WHERE ST_CONTAINS(way,  ST_Transform(ST_SetSRID(ST_Point(\(coordinate.longitude), \(coordinate.latitude)), 4326), 3857))
                 ORDER BY admin_level DESC;
                 """)
                 .all(decoding: Place.self)
-            return placesFuture
         })
     }
 
@@ -32,13 +31,12 @@ final class PostgreSQLDatabaseService: DatabaseFetchable {
         let whereClause = conditions.joined(separator: " AND ")
 
         return container.withPooledConnection(to: .psql, closure: { (conn: PostgreSQLDatabase.Connection) -> EventLoopFuture<[Place]> in
-            let placesFuture = conn.raw("""
+            return conn.raw("""
                 SELECT name, "name:en" as name_en, "name:de" as name_de, admin_level, way_area from place_polygon
                 WHERE \(whereClause)
                 ORDER BY admin_level DESC;
                 """)
                 .all(decoding: Place.self)
-            return placesFuture
         })
     }
 

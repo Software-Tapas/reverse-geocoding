@@ -9,11 +9,7 @@ final class InMemoryCachingLayerService: DatabaseCachable {
 
     func fetchPlaces(forCoordinate coordinate: Coordinate) -> EventLoopFuture<PlaceResponse?> {
         let data = self.data[coordinate]
-        if data != nil {
-            return container.future(data)
-        } else {
-            return container.future(nil)
-        }
+        return container.future(data)
     }
 
     func store(response: PlaceResponse, for coordinate: Coordinate) throws -> EventLoopFuture<Void> {
