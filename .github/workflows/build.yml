@@ -1,0 +1,19 @@
+name: build
+on: [push, pull_request]
+jobs:
+  focal:
+    container:
+      image: swift:focal
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - run: apt-get -qq update && apt-get -q -y install libpq-dev libssl-dev zlib1g-dev
+    - run: swift test --enable-test-discovery --sanitize=thread
+  focal-release:
+    container:
+      image: swift:focal
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - run: apt-get -qq update && apt-get -q -y install libpq-dev libssl-dev zlib1g-dev
+    - run: swift build --enable-test-discovery -c release
