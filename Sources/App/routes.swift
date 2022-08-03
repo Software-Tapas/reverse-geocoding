@@ -1,11 +1,13 @@
 import Vapor
 
 /// Register your application's routes here.
-public func routes(_ router: Router) throws {
+func routes(_ app: Application) throws {
     // Basic health endpoint for docker
-    router.get("health") { req in
-        return HTTPResponseStatus(statusCode: 200)
+    app.get("health") { _ in
+        return HTTPStatus.ok
     }
-    let reverseGeocodingController = ReverseGeocodingController()
-    try router.grouped("location").register(collection: reverseGeocodingController)
+    
+    // Register the main controller
+    try app.grouped("location")
+        .register(collection: ReverseGeocodingController())
 }

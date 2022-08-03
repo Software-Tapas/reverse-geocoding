@@ -1,7 +1,7 @@
 import Vapor
 
-protocol DatabaseCachable: ServiceType {
+protocol DatabaseCachable {
+    func fetchPlaces(forCoordinate coordinate: Coordinate) async throws -> PlaceResponse?
 
-    func fetchPlaces(forCoordinate coordinate: Coordinate) -> EventLoopFuture<PlaceResponse?>
-    func store(response: PlaceResponse, for coordinate: Coordinate) throws -> EventLoopFuture<Void>
+    func store(response: PlaceResponse, for coordinate: Coordinate) async throws
 }

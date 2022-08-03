@@ -1,88 +1,60 @@
-import PostgreSQL
-import Redis
+import Fluent
+import FluentPostgresDriver
 import Vapor
-import Service
+import Redis
 
-/// Called before your application initializes.
-public func configure(_ config: inout Config, _ env: inout Environment, _ services: inout Services) throws {
-    /// Register providers first
-    try services.register(PostgreSQLProvider())
-    try services.register(RedisProvider())
-
-    /// Register routes to the router
-    let router = EngineRouter.default()
-    try routes(router)
-    services.register(router, as: Router.self)
-
-    /// Register middleware
-    var middlewares = MiddlewareConfig()
+// configures your application
+public func configure(_ app: Application) throws {
+    // Register CORS middleware
     let corsConfiguration = CORSMiddleware.Configuration(
         allowedOrigin: .all,
         allowedMethods: [.GET, .POST, .PUT, .OPTIONS, .DELETE, .PATCH],
         allowedHeaders: [.accept, .authorization, .contentType, .origin, .xRequestedWith, .userAgent, .accessControlAllowOrigin]
     )
-    let corsMiddleware = CORSMiddleware(configuration: corsConfiguration)
-    middlewares.use(corsMiddleware)
-    middlewares.use(ErrorMiddleware.self)
-    services.register(middlewares)
-
-    services.register(DatabaseCachable.self, factory: InMemoryCachingLayerService.makeService)
-
-    if env != .testing {
-        // Configuration of PostgreSQL
-        let postgreSQLConfig = try PostgreSQLDatabaseConfig(env: Environment.self)
-        let postgresql = PostgreSQLDatabase(config: postgreSQLConfig)
-
-        // Configuration of Redis
-        let redisConfig = try RedisClientConfig(env: Environment.self)
-        let redis = try RedisDatabase(config: redisConfig)
-
-        /// Register the configured PostgreSQL database to the database config.
-        var databases = DatabasesConfig()
-        databases.enableLogging(on: .psql)
-        databases.add(database: postgresql, as: .psql)
-        databases.add(database: redis, as: .redis)
-        services.register(databases)
-        services.register(DatabaseFetchable.self, factory: PostgreSQLDatabaseService.makeService)
-        services.register(DatabaseCachable.self, factory: RedisCacheLayerService.makeService)
-        config.prefer(RedisCacheLayerService.self, for: DatabaseCachable.self)
+    app.middleware.use(CORSMiddleware(configuration: corsConfiguration))
+    
+    // Setup Redis and PostgreSQL configuration if environment is not in testing mode
+    if app.environment != Environment.testing {
+        app.redis.configuration = try RedisConfiguration(env: Environment.self)
+        app.databases.use(try .postgres(fromEnvironment: Environment.self, app: app), as: .psql)
     }
-
-    var commandConfig = CommandConfig.default()
-    commandConfig.use(PurgeRedisCache(), as: "purge-cache")
-    services.register(commandConfig)
+    
+    // Register a command to purge the Redis cache
+    app.commands.use(PurgeRedisCacheCommand(), as: "purge-cache")
+    try routes(app)
 }
 
 enum AppError: Error {
-    case parameterMissing
+    case environemntParameterMissing
 }
 
-extension RedisClientConfig {
+extension RedisConfiguration {
     init(env: Environment.Type) throws {
         guard let urlString = env.get("REDIS_URL"),
-            let url = URL(string: urlString)
-            else {
-                throw AppError.parameterMissing
+              let url = URL(string: urlString)
+        else {
+            throw AppError.environemntParameterMissing
         }
-        self.init(url: url)
+        try self.init(url: url)
     }
 }
 
-extension PostgreSQLDatabaseConfig {
-    init(env: Environment.Type, transport: PostgreSQLConnection.TransportConfig = .cleartext) throws {
+extension DatabaseConfigurationFactory {
+    static func postgres(fromEnvironment env: Environment.Type, app: Application) throws -> DatabaseConfigurationFactory {
         guard let hostname = env.get("DB_HOST"),
-            let portString = env.get("DB_PORT"),
-            let username = env.get("DB_USERNAME"),
-            let database = env.get("DB_DATABASE"),
-            let port = Int(portString)
-            else { throw AppError.parameterMissing }
-        var password: String?
-        if let passwordFile = env.get("DB_PASSWORD_FILE") {
-            let url = URL(fileURLWithPath: passwordFile)
-            password = try String(contentsOf: url).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-        } else if let passwordFile = env.get("DB_PASSWORD") {
-            password = passwordFile
-        }
-        self.init(hostname: hostname, port: port, username: username, database: database, password: password, transport: transport)
+              let username = env.get("DB_USERNAME"),
+              let database = env.get("DB_DATABASE")
+        else { throw AppError.environemntParameterMissing }
+        
+        // Load password from file, but if it doesn't exsti, try the environment variable.
+        // Passing a password via file is recommended.
+        guard let password = try Environment.secret(key: "DB_PASSWORD_FILE", fileIO: app.fileio, on: app.eventLoopGroup.next()).wait() ?? Environment.get("DB_PASSWORD") else { throw AppError.environemntParameterMissing }
+        
+        return .postgres(
+            hostname: hostname,
+            port: Environment.get("DB_PORT").flatMap(Int.init(_:)) ?? PostgresConfiguration.ianaPortNumber,
+            username: username,
+            password: password,
+            database: database)
     }
 }

@@ -1,7 +1,7 @@
 import Vapor
 
-protocol DatabaseFetchable: ServiceType {
-
-    func fetchPlaces(forCoordinate coordinate: Coordinate) -> EventLoopFuture<[Place]>
-    func fetchPlaces(forCoordinates coordinates: [Coordinate]) throws -> EventLoopFuture<[Place]>
+protocol DatabaseFetchable {
+    func fetchPlaces(forCoordinate coordinate: Coordinate) async throws -> [Place]
+    
+    func fetchPlaces(forCoordinates coordinates: [Coordinate]) async throws -> [Place]
 }

@@ -1,7 +1,6 @@
 # Reverse Geocoding Service 
-[![Language](https://img.shields.io/badge/Swift-4.2-brightgreen.svg)](http://swift.org)
-[![Vapor Version](https://img.shields.io/badge/Vapor-3-F6CBCA.svg)](http://vapor.codes)
-[![CircleCI](https://circleci.com/gh/Software-Tapas/reverse-geocoding.svg?style=shield)](https://circleci.com/gh/Software-Tapas/reverse-geocoding)
+[![Language](https://img.shields.io/badge/Swift-5.6-brightgreen.svg)](http://swift.org)
+[![Vapor Version](https://img.shields.io/badge/Vapor-4-F6CBCA.svg)](http://vapor.codes)
 
 ## Introduction
 For location-based services, it is often useful to display a name for any location. This can be achieved by reverse geocoding. By making use of Open Street Map data this project makes it possible to retrieve a location name for any coordinate worldwide in different languages (currently English and German).
@@ -23,7 +22,7 @@ This is an example response for the *GET* query on `http://localhost:8080/locati
 ```
 
 ### Multi coordiante location name
-`POST /location/<latitude>/<longitude>` (POST method due to body content). The body looks like the following:
+`POST /location` (POST method due to body content). The body looks like the following:
 
 ```
 {
@@ -42,8 +41,9 @@ This is an example response for the *GET* query on `http://localhost:8080/locati
 This request will return a nullified coordiante object in the response due to multiple input coordinates.
 
 ## Requirements
-- Swift 4.2 is used with Vapor 3.
+- Swift 5.6 is used with Vapor 4.
 - Postgres with PostGIS is used for data storage and queries.
+- Redis is used as a caching layer to improve performance.
 - A docker-compose file is placed in the root directory. See the docker section for further steps with docker.
 
 ## Data
