@@ -15,17 +15,17 @@ services:
       DB_PASSWORD_FILE: "/database-service-password"
       DB_HOST: "db"
       DB_PORT: 5432
-      DB_USERNAME: "vapor"
-      DB_DATABASE: "vapor"
+      DB_USERNAME: "user"
+      DB_DATABASE: "user"
       REDIS_URL: "redis://redis"
     volumes:
       - ./tmp/database-service-password:/database-service-password
 
   db:
-    image: mdillon/postgis
+    image: postgis/postgis
     environment:
-      POSTGRES_USER: "vapor"
-      POSTGRES_DBNAME: "vapor"
+      POSTGRES_USER: "user"
+      POSTGRES_DBNAME: "user"
       POSTGRES_PASSWORD_FILE: "/database-service-password"
       PGDATA: "/var/lib/postgresql/data/db-files/"
     ports:
@@ -35,6 +35,7 @@ services:
         source: ./tmp/data
         target: /var/lib/postgresql/data
       - ./tmp/database-service-password:/database-service-password
+      - ./reverse-geodecoding-data.sql:/docker-entrypoint-initdb.d/reverse-geodecoding-data.sql
   redis:
     image: redis:alpine
     ports:

@@ -3,13 +3,6 @@ import XCTest
 @testable import App
 
 class ReverseGeocodingTests: XCTestCase {
-    var app: Application!
-
-    override func setUp() {
-        super.setUp()
-
-        app = try! Application.testable()
-    }
 
     func testEmptyResult() throws {
         let places = [Place]()
@@ -97,18 +90,4 @@ class ReverseGeocodingTests: XCTestCase {
         let tuple = PlaceTuple(primaryPlace: fullPlace, secondaryPlace: emptyPlace)
         XCTAssertEqual(tuple.name(forLanguage: .en), "Berlin")
     }
-}
-
-extension ReverseGeocodingTests {
-    static let allTests = [
-        ("testEmptyResult", testEmptyResult),
-        ("testResultWithEmptyNames", testResultWithEmptyNames),
-        ("testResultWithOnePlace", testResultWithOnePlace),
-        ("testResultWithTwoLowPlaces", testResultWithTwoLowPlaces),
-        ("testResultWithThreePlaces", testResultWithThreePlaces),
-        ("testResultWithHighPlacesOnCountryLevel", testResultWithHighPlacesOnCountryLevel),
-        ("testResultWithTwoEqualNames", testResultWithTwoEqualNames),
-        ("testResultWithTwoEqualNamesAndAnother", testResultWithTwoEqualNamesAndAnother),
-        ("testPlaceTupleHandlingWithOnlyOnePlace", testPlaceTupleHandlingWithOnlyOnePlace),
-    ]
 }
