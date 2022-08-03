@@ -19,6 +19,7 @@ final class PostgreSQLDatabaseService: DatabaseFetchable {
     
     func fetchPlaces(forCoordinates coordinates: [Coordinate]) async throws -> [Place] {
         guard coordinates.count > 0 else { throw Error.noCoordinatesSupplied }
+        // Build a dynamic where clause that is then past into the actual query later
         let conditions = coordinates.map { (coordinate) in
             return "ST_CONTAINS(way,  ST_Transform(ST_SetSRID(ST_Point(\(coordinate.longitude), \(coordinate.latitude)), 4326), 3857))"
         }

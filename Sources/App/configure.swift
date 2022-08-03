@@ -13,12 +13,13 @@ public func configure(_ app: Application) throws {
     )
     app.middleware.use(CORSMiddleware(configuration: corsConfiguration))
     
-    // Setup redis and postgres configuration if environment is not in testing mode
+    // Setup Redis and PostgreSQL configuration if environment is not in testing mode
     if app.environment != Environment.testing {
         app.redis.configuration = try RedisConfiguration(env: Environment.self)
         app.databases.use(try .postgres(fromEnvironment: Environment.self, app: app), as: .psql)
     }
     
+    // Register a command to purge the Redis cache
     app.commands.use(PurgeRedisCacheCommand(), as: "purge-cache")
     try routes(app)
 }
@@ -45,6 +46,8 @@ extension DatabaseConfigurationFactory {
               let database = env.get("DB_DATABASE")
         else { throw AppError.environemntParameterMissing }
         
+        // Load password from file, but if it doesn't exsti, try the environment variable.
+        // Passing a password via file is recommended.
         guard let password = try Environment.secret(key: "DB_PASSWORD_FILE", fileIO: app.fileio, on: app.eventLoopGroup.next()).wait() ?? Environment.get("DB_PASSWORD") else { throw AppError.environemntParameterMissing }
         
         return .postgres(

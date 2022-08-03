@@ -1,5 +1,6 @@
 import Vapor
 
+/// In-memory caching layer, that can be used for example for testing purposes.
 final class InMemoryCachingLayerService: DatabaseCachable {
     private var data: [Coordinate: PlaceResponse] = [:]
 
