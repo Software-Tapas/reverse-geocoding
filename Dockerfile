@@ -58,6 +58,13 @@ WORKDIR /app
 # Copy built executable and any staged resources from builder
 COPY --from=build --chown=vapor:vapor /staging /app
 
+# set up entrypoint scripts
+COPY scripts/wait-for.sh .
+COPY scripts/entrypoint.sh .
+
+RUN chmod +x ./wait-for.sh \
+    && chmod +x ./entrypoint.sh
+
 # Ensure all further commands run as the vapor user
 USER vapor:vapor
 
