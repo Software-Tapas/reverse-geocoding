@@ -24,6 +24,6 @@ final class RedisCacheLayerService: DatabaseCachable {
 
 extension Coordinate {
     var key: RedisKey {
-        .init("\(self.latitude);\(self.latitude)")
+        .init("\(self.latitude);\(self.longitude)")
     }
 }
