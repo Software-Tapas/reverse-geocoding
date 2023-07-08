@@ -1,5 +1,5 @@
 # Reverse Geocoding Service 
-[![Language](https://img.shields.io/badge/Swift-5.6-brightgreen.svg)](http://swift.org)
+[![Language](https://img.shields.io/badge/Swift-5.8-brightgreen.svg)](http://swift.org)
 [![Vapor Version](https://img.shields.io/badge/Vapor-4-F6CBCA.svg)](http://vapor.codes)
 
 ## Introduction
@@ -41,7 +41,7 @@ This is an example response for the *GET* query on `http://localhost:8080/locati
 This request will return a nullified coordiante object in the response due to multiple input coordinates.
 
 ## Requirements
-- Swift 5.6 is used with Vapor 4.
+- Swift 5.8 is used with Vapor 4.
 - Postgres with PostGIS is used for data storage and queries.
 - Redis is used as a caching layer to improve performance.
 - A docker-compose file is placed in the root directory. See the docker section for further steps with docker.
