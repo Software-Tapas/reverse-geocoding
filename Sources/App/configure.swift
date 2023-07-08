@@ -2,6 +2,7 @@ import Fluent
 import FluentPostgresDriver
 import Vapor
 import Redis
+import PostgresKit
 
 // configures your application
 public func configure(_ app: Application) throws {
