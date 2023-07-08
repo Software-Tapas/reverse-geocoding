@@ -50,11 +50,14 @@ extension DatabaseConfigurationFactory {
         // Passing a password via file is recommended.
         guard let password = try Environment.secret(key: "DB_PASSWORD_FILE", fileIO: app.fileio, on: app.eventLoopGroup.next()).wait() ?? Environment.get("DB_PASSWORD") else { throw AppError.environemntParameterMissing }
         
-        return .postgres(
+        let postgresConfiguration = SQLPostgresConfiguration(
             hostname: hostname,
-            port: Environment.get("DB_PORT").flatMap(Int.init(_:)) ?? PostgresConfiguration.ianaPortNumber,
+            port: Environment.get("DB_PORT").flatMap(Int.init(_:)) ?? SQLPostgresConfiguration.ianaPortNumber,
             username: username,
             password: password,
-            database: database)
+            database: database,
+            tls: .disable
+        )
+        return .postgres(configuration: postgresConfiguration)
     }
 }
